@@ -14,23 +14,24 @@ import (
 // 1. Added the new labels name to defaultExtensionLabels
 // 2. Added the new labels values to getAllResource
 var defaultExtensionLabels = map[string][]string{
-	"sys_elb":                 []string{"name", "provider", "vip_address"},
-	"sys_elb_listener":        []string{"name", "port"},
-	"sys_nat":                 []string{"name"},
-	"sys_rds":                 []string{"port", "name", "role"},
-	"sys_dcs":                 []string{"ip", "port", "name", "engine"},
-	"sys_dms":                 []string{"name"},
-	"sys_dms_instance":        []string{"name", "engine_version", "resource_spec_code", "connect_address", "port"},
-	"sys_dms_instance_broker": []string{"name", "engine_version", "resource_spec_code", "connect_address", "port"},
-	"sys_dms_instance_topics": []string{"name", "engine_version", "resource_spec_code", "connect_address", "port"},
-	"sys_vpc_bandwidth":       []string{"name", "size", "share_type", "bandwidth_type", "charge_mode"},
-	"sys_vpc_eip":             []string{"name", "public_ip_address", "type"},
-	"sys_evs":                 []string{"name", "server_id", "device"},
-	"sys_ecs":                 []string{"hostname"},
-	"sys_as":                  []string{"name", "status"},
-	"sys_functiongraph":       []string{"func_urn"},
+	"sys_elb":                 {"name", "provider", "vip_address"},
+	"sys_elb_listener":        {"name", "port"},
+	"sys_nat":                 {"name"},
+	"sys_rds":                 {"port", "name", "role"},
+	"sys_dcs":                 {"ip", "port", "name", "engine"},
+	"sys_dms":                 {"name"},
+	"sys_dms_instance":        {"name", "engine_version", "resource_spec_code", "connect_address", "port"},
+	"sys_dms_instance_broker": {"name", "engine_version", "resource_spec_code", "connect_address", "port"},
+	"sys_dms_instance_topics": {"name", "engine_version", "resource_spec_code", "connect_address", "port"},
+	"sys_vpc_bandwidth":       {"name", "size", "share_type", "bandwidth_type", "charge_mode"},
+	"sys_vpc_eip":             {"name", "public_ip_address", "type"},
+	"sys_evs":                 {"name", "server_id", "device"},
+	"sys_ecs":                 {"hostname"},
+	"sys_as":                  {"name", "status"},
+	"sys_functiongraph":       {"func_urn"},
 }
 
+// TTL represents the time to life
 const TTL = time.Hour * 3
 
 var (
@@ -191,13 +192,13 @@ func (exporter *BaseHuaweiCloudExporter) getVpcResourceInfo() map[string][]strin
 	vpcInfo.Lock()
 	defer vpcInfo.Unlock()
 	if vpcInfo.Info == nil || time.Now().Unix() > vpcInfo.TTL || vpcInfo.LenMetric != exporter.MetricLen {
-		allPublicIps, err := getAllPublicIp(exporter.ClientConfig)
+		allPublicIps, err := getAllPublicIP(exporter.ClientConfig)
 		if err != nil {
 			logs.Logger.Errorln("Get all PublicIp error:", err.Error())
 		}
 		if allPublicIps != nil {
-			for _, publicIp := range *allPublicIps {
-				resourceInfos[publicIp.ID] = []string{publicIp.BandwidthName, publicIp.PublicIpAddress, publicIp.Type}
+			for _, publicIP := range *allPublicIps {
+				resourceInfos[publicIP.ID] = []string{publicIP.BandwidthName, publicIP.PublicIpAddress, publicIP.Type}
 			}
 		}
 

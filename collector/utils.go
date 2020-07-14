@@ -1,10 +1,12 @@
 package collector
 
 import (
-	"gopkg.in/yaml.v2"
 	"io/ioutil"
+
+	"gopkg.in/yaml.v2"
 )
 
+// CloudAuth represents the config.auth structure
 type CloudAuth struct {
 	ProjectName string `yaml:"project_name"`
 	ProjectID   string `yaml:"project_id"`
@@ -17,17 +19,20 @@ type CloudAuth struct {
 	Password    string `yaml:"password"`
 }
 
+// Global represents the config.global structure
 type Global struct {
 	Port       string `yaml:"port"`
 	Prefix     string `yaml:"prefix"`
 	MetricPath string `yaml:"metric_path"`
 }
 
+// CloudConfig represents the config file outer structure
 type CloudConfig struct {
 	Auth   CloudAuth `yaml:"auth"`
 	Global Global    `yaml:"global"`
 }
 
+// NewCloudConfigFromFile reads the config file
 func NewCloudConfigFromFile(file string) (*CloudConfig, error) {
 	var config CloudConfig
 
@@ -46,6 +51,7 @@ func NewCloudConfigFromFile(file string) (*CloudConfig, error) {
 	return &config, err
 }
 
+// SetDefaultConfigValues set default config values
 func SetDefaultConfigValues(config *CloudConfig) {
 	if config.Global.Port == "" {
 		config.Global.Port = ":8087"
@@ -59,10 +65,3 @@ func SetDefaultConfigValues(config *CloudConfig) {
 		config.Global.Prefix = "huaweicloud"
 	}
 }
-
-//
-//func getFieldString(e *Employee, field string) string {
-//	r := reflect.ValueOf(e)
-//	f := reflect.Indirect(r).FieldByName(field)
-//	return f.String()
-//}

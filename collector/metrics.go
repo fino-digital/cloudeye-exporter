@@ -25,6 +25,7 @@ import (
 	"github.com/huaweicloud/golangsdk/openstack/vpc/v1/publicips"
 )
 
+// Config the upstream api config
 type Config struct {
 	AccessKey        string
 	SecretKey        string
@@ -135,6 +136,7 @@ func genClient(c *Config, ao golangsdk.AuthOptionsProvider) (*golangsdk.Provider
 	return client, nil
 }
 
+// InitConfig initializes the config
 func InitConfig(config *CloudConfig) (*Config, error) {
 	auth := config.Auth
 	configOptions := Config{
@@ -415,7 +417,7 @@ func getAllDmsQueue(c *Config) (*[]queues.Queue, error) {
 	return &allQueues, nil
 }
 
-func getAllPublicIp(c *Config) (*[]publicips.PublicIP, error) {
+func getAllPublicIP(c *Config) (*[]publicips.PublicIP, error) {
 	client, err := openstack.NewVPCV1(c.HwClient, golangsdk.EndpointOpts{
 		Region: c.Region,
 	})
