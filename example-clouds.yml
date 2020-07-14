@@ -1,0 +1,10 @@
+global:
+  prefix: "otc"
+
+auth:
+  auth_url: "https://iam.eu-de.otc.t-systems.com/v3"
+  domain_name: "OTC-EU-DE-00000000000000000000"
+  project_name: "eu-de_myproject"
+  access_key: "AB1CDEFGHIJKLMNOPQRS"
+  secret_key: "mYsEcReTKey"
+  region: "eu-de"
