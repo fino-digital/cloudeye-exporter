@@ -49,6 +49,7 @@ func main() {
 	}
 
 	http.HandleFunc(config.Global.MetricPath, handler)
+	http.HandleFunc("/healthz", func(w http.ResponseWriter, _ *http.Request) { w.Write([]byte("ok")) })
 
 	logs.Logger.Infoln("Start server at ", config.Global.Port)
 	if err := http.ListenAndServe(config.Global.Port, nil); err != nil {
