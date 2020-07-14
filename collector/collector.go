@@ -34,6 +34,7 @@ var privateResourceFlag = map[string]string{
 	"rabbitmq_node":    "rabbitmq_node",
 }
 
+// BaseHuaweiCloudExporter data structure
 type BaseHuaweiCloudExporter struct {
 	From         string
 	To           string
@@ -52,6 +53,7 @@ func replaceName(name string) string {
 	return newName
 }
 
+// GetMonitoringCollector init function
 func GetMonitoringCollector(configpath string, namespaces []string) (*BaseHuaweiCloudExporter, error) {
 	globalConfig, err := NewCloudConfigFromFile(configpath)
 	if err != nil {
@@ -69,6 +71,7 @@ func GetMonitoringCollector(configpath string, namespaces []string) (*BaseHuawei
 	return exporter, nil
 }
 
+// GetMetricPrefixName generates the prefixed metric name
 func GetMetricPrefixName(prefix string, namespace string) string {
 	return fmt.Sprintf("%s_%s", prefix, replaceName(namespace))
 }
@@ -158,14 +161,15 @@ func (exporter *BaseHuaweiCloudExporter) collectMetricByNamespace(ctx context.Co
 	}
 	stamp64 := float64(metricTimestamp)
 
-	sub_duration := (to64 - stamp64) / 1000
+	subDuration := (to64 - stamp64) / 1000
 	if err := sendMetricData(ctx, ch, prometheus.MustNewConstMetric(
 		prometheus.NewDesc(GetMetricPrefixName(exporter.Prefix, namespace)+"_duration_seconds",
-			namespace, nil, nil), prometheus.GaugeValue, sub_duration)); err != nil {
+			namespace, nil, nil), prometheus.GaugeValue, subDuration)); err != nil {
 		logs.Logger.Errorf("Context has canceled, no need to send metric data, metric name: %s", GetMetricPrefixName(exporter.Prefix, namespace)+"_duration_seconds")
 	}
 }
 
+// Collect the metrics from the upstream api
 func (exporter *BaseHuaweiCloudExporter) Collect(ch chan<- prometheus.Metric) {
 	periodm, err := time.ParseDuration("-5m")
 	if err != nil {
@@ -218,16 +222,16 @@ func sendMetricData(ctx context.Context, ch chan<- prometheus.Metric, metric pro
 
 func (exporter *BaseHuaweiCloudExporter) debugMetricInfo(md metricdata.MetricData) {
 	logs.Logger.Debugln("Get datapoints of metric begin... (from):", exporter.From)
-	dataJson, err := json.MarshalIndent(md.Datapoints, "", " ")
+	dataJSON, err := json.MarshalIndent(md.Datapoints, "", " ")
 	if err != nil {
 		logs.Logger.Debugln("MarshalIndent Datapoints error: ", err.Error())
 	}
-	metricJson, err := json.MarshalIndent(md.Dimensions, "", " ")
+	metricJSON, err := json.MarshalIndent(md.Dimensions, "", " ")
 	if err != nil {
 		logs.Logger.Debugln("MarshalIndent Dimensions error: ", err.Error())
 	}
-	logs.Logger.Debugln("The datapoints of metric are:" + string(dataJson))
-	logs.Logger.Debugln("The metric value is:", string(metricJson))
+	logs.Logger.Debugln("The datapoints of metric are:" + string(dataJSON))
+	logs.Logger.Debugln("The metric value is:", string(metricJSON))
 	logs.Logger.Debugln("Get datapoints of metric end. (to):", exporter.To)
 }
 
@@ -330,8 +334,8 @@ func (exporter *BaseHuaweiCloudExporter) getExtensionLabelValues(
 	return dimensionValues
 }
 
-func initClient(global_config *CloudConfig) *Config {
-	c, err := InitConfig(global_config)
+func initClient(globalConfig *CloudConfig) *Config {
+	c, err := InitConfig(globalConfig)
 	if err != nil {
 		logs.Logger.Fatalln("Init config error: ", err.Error())
 	}
