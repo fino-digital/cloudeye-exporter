@@ -51,7 +51,7 @@ func buildClient(c *Config) error {
 		return buildClientByPassword(c)
 	}
 
-	return errors.New("Must config token or aksk or username password to be authorized")
+	return errors.New("Must config token or ask or username and password to be authorized")
 }
 
 func buildClientByPassword(c *Config) error {
