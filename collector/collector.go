@@ -195,8 +195,8 @@ func (exporter *BaseHuaweiCloudExporter) Collect(ch chan<- prometheus.Metric) {
 			if ok {
 				continue
 			}
-		case <-time.After(30 * time.Second):
-			logs.Logger.Errorf("Error collecting metrics: Timeout making calls, waited for 30s without response")
+		case <-time.After(60 * time.Second):
+			logs.Logger.Errorf("Error collecting metrics: Timeout making calls, waited for 60s without response")
 			continue
 		}
 	}
